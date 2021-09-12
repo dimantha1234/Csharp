@@ -1,0 +1,44 @@
+1)//to insert,delete or to execute queries that dont return values 
+
+
+SqlConnection con= new SqlConnection(@"copy paste the path to database");
+string query="delete from Login where username='"+txtusername.Text+"';";
+SqlCommand cmd=new SqlCommand(query,con);
+con.Open();
+cmd.ExecuteNonQuery();
+con.Close();
+
+2)//to select a single value
+
+SqlConnection con= new SqlConnection(@"copy paste the path to database");
+string query="select userid from Login where username='"+txtusername.Text+"';";
+SqlCommand cmd=new SqlCommand(query,con);
+con.Open();
+string txtuserid.Text=cmd.ExecuteScalar().ToString();
+con.Close();
+
+
+3)//to select a more than one value
+
+SqlConnection con= new SqlConnection(@"copy paste the path to database");
+string query="select userid,age, from Login where username='"+txtusername.Text+"';";
+SqlCommand cmd=new SqlCommand(query,con);
+con.Open();
+sqlDataReader rdr=cmd.ExecuteReader();
+if(rdr.Read())
+{
+	txtuserid.Text=rdr.GetValue(0).ToString();
+	txtage.Text=rdr.GetValue(1).ToString();
+}
+con.close();
+
+4)//to select many data and put it on a grid
+
+SqlConnection con= new SqlConnection(@"copy paste the path to database");
+string query="select * from Login;";
+SqlDataAdapter adp=new SqlDataAdapter(query,con);
+con.Open();
+DataTable dt=new DataTable();
+adp.Fill(dt);
+StudentDataGridView.DataSource=dt;
+con.Close();
