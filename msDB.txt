@@ -1,0 +1,98 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Data.SqlClient;
+
+namespace exampleDB1
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+        }
+        SqlConnection con = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=E:\Instructor\DSE 20.2F\10.09.2021 DSE 20.2F(C# 4)\exampleDB1\db2.mdf;Integrated Security=True;Connect Timeout=30");
+
+        private void btnInsert_Click(object sender, EventArgs e)
+        {
+            con.Open();
+            String InsertQuery = "insert into student values('" + txtStudentID.Text + "','" + txtStudentName.Text + "');";
+            SqlCommand com = new SqlCommand(InsertQuery, con);
+            
+            com.ExecuteNonQuery();
+            MessageBox.Show("Data Inserted into the database", "Data insertion", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            txtStudentID.Text = "";
+            txtStudentName.Text = "";
+            txtStudentName.Focus();
+
+            con.Close();
+        }
+
+        private void btnUpdate_Click(object sender, EventArgs e)
+        {
+            con.Open();
+            string UpdateQuery = "update student set student_name = '" + txtStudentName.Text + "' where student_id = '" + txtStudentID.Text + "';";
+            SqlCommand com = new SqlCommand(UpdateQuery, con);
+            com.ExecuteNonQuery();
+            MessageBox.Show("Data updated into the database", "Data updated", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            
+            con.Close();
+        }
+
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            con.Open();
+            string DeleteQuery = "delete from student where student_id = '" + txtStudentID.Text + "';";
+            SqlCommand com = new SqlCommand(DeleteQuery, con);
+            com.ExecuteNonQuery();
+            MessageBox.Show("Data has deleted from the database", "Data Detetion", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+
+            con.Close();
+        }
+
+        private void btnSearch_Click(object sender, EventArgs e)
+        {
+            /*con.Open();
+            String query = "select student_name from student where student_id = '" + txtStudentID.Text + "';";
+            SqlCommand cmd = new SqlCommand(query, con);
+            String name = Convert.ToString(cmd.ExecuteScalar());
+            MessageBox.Show("student name:" + name);*/
+
+            con.Open();
+            String query = "select student_Id,student_name from Student where student_Id='" + txtStudentID.Text + "'";
+            SqlCommand cmd = new SqlCommand(query, con);
+            SqlDataReader rdr = cmd.ExecuteReader();
+
+            if(rdr.Read())
+            {
+                txtStudentID.Text = rdr.GetValue(0).ToString();
+                txtStudentName.Text = rdr.GetValue(1).ToString();
+            }
+            con.Close();
+        }
+
+        private void btnSelect_Click(object sender, EventArgs e)
+        {
+            con.Open();
+            string SelectQ = "select * from student";
+            SqlDataAdapter sda = new SqlDataAdapter(SelectQ, con);
+            DataTable dt = new DataTable();
+            sda.Fill(dt);
+            studentView.DataSource = dt;
+
+            txtStudentID.Text = "";
+            txtStudentName.Text = "";
+            txtStudentID.Focus();
+            con.Close();
+        }
+    }
+}
