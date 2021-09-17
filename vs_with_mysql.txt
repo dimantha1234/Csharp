@@ -1,0 +1,61 @@
+1)To access mysql
+ using System.Data;
+ using MySql.Data.MySqlClient;
+ MySqlConnection con = new MySqlConnection("server=localhost;user id=root;database=student");
+
+2)For no query executions 
+
+            con.Open();
+            string insertQuery = "INSERT INTO student.login(name,password) VALUES ('" + txtname.Text + "','" + txtpassword.Text + "')";
+            MySqlCommand com = new MySqlCommand(insertQuery, con);
+            com.ExecuteNonQuery();
+            MessageBox.Show("Data inserted into the database!!");
+            txtname.Focus();
+            txtname.Text = "";
+            txtpassword.Text = "";
+            button1.BackColor = Color.GreenYellow; //highlights button in green yellow color after clicking on it
+            con.Close();
+
+3)To read scalar values
+
+            con.Open();
+            MySqlCommand cmd = new MySqlCommand("select password from student.login where name='" + txtname.Text + "';", con);
+            txtpassword.Text = cmd.ExecuteScalar().ToString();
+            MessageBox.Show("Data retrieved successfully!!");
+            txtname.Focus();
+            txtname.Text = "";
+            txtpassword.Text = "";
+            btnview.BackColor = Color.GreenYellow;
+            con.Close();
+
+4)To read more than 1 value
+
+	    con.Open();
+            MySqlCommand cmd = new MySqlCommand("select password,id from student.login where name='" + txtname.Text + "';",con);
+            MySqlDataReader rdr = cmd.ExecuteReader();
+            while(rdr.Read())
+            {
+                txtpassword.Text = rdr.GetValue(0).ToString();
+                lblidnum.Text = rdr.GetValue(1).ToString();
+            }
+            MessageBox.Show("Data retrieved successfully!!");
+            txtname.Focus();
+            txtname.Text = "";
+            txtpassword.Text = "";
+            lblidnum.Text = "****";
+            btnview2.BackColor = Color.GreenYellow;
+            con.Close();
+
+5)To read all values
+
+            con.Open();
+            MySqlDataAdapter adp = new MySqlDataAdapter("select * from student.login", con);
+            DataTable dt = new DataTable();
+            adp.Fill(dt);
+            dataGridViewAll.DataSource = dt;
+            txtname.Focus();
+            txtname.Text = "";
+            txtpassword.Text = "";
+            lblidnum.Text = "****";
+            btnviewall.BackColor = Color.GreenYellow;
+            con.Close();
